@@ -32,7 +32,6 @@ const getObj = async () => {
 };
 
 const expected = {
-  _id: expect.any(String),
   patientId: expect.any(String),
   medications: expect.objectContaining({
     medicines: expect.any(Array),

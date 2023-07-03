@@ -8,7 +8,7 @@ function getDeviceType() {
   return data[index];
 }
 
-async function getThemeById() {
+async function getThemeId() {
   try {
     const token = await tokenString();
     const response = await phin({
@@ -25,7 +25,7 @@ async function getThemeById() {
       const result = specificData[index]._id;
       return result;
     } else {
-      throw new Error('Specific data not found, please add data first');
+      throw new Error('Specific data not found, please add theme first');
     }
   } catch (error) {
     console.error('Error:', error.message);
@@ -33,5 +33,5 @@ async function getThemeById() {
 }
 
 module.exports = {
-  getDeviceType, getThemeById,
+  getDeviceType, getThemeId,
 };

@@ -1,0 +1,72 @@
+const phin = require('phin');
+
+const { tokenString } = require('./common');
+
+async function getConsoleType() {
+    try {
+        const token = await tokenString();
+        const response = await phin({
+            method: 'GET',
+            url: 'http://localhost:3001/api/master?code=CLINICAL_CONSOLE_TYPE',
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        const arrOfData = JSON.parse(response.body);
+        const index = Math.floor(Math.random() * arrOfData.length);
+        const result = arrOfData[index].code;
+        return result;
+    } catch (error) {
+        console.error('Error:', error.message);
+    }
+}
+
+async function getWorkFlowType() {
+    try {
+        const token = await tokenString();
+        const response = await phin({
+            method: 'GET',
+            url: 'http://localhost:3001/api/master?code=WORKFLOW_TYPES',
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        const arrOfData = JSON.parse(response.body);
+        const index = Math.floor(Math.random() * arrOfData.length);
+        const result = arrOfData[index].code;
+        return result;
+    } catch (error) {
+        console.error('Error:', error.message);
+    }
+}
+
+async function getConsoleId() {
+    try {
+        const token = await tokenString();
+        const response = await phin({
+            method: 'GET',
+            url: 'http://localhost:3001/api/clinicalconsole',
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        const arrOfData = JSON.parse(response.body);
+        const specificData = arrOfData.filter((element) => element.label.startsWith('TEST'));
+        if (specificData.length > 0) {
+            const index = Math.floor(Math.random() * specificData.length);
+            const result = specificData[index]._id;
+            return result;
+        } else {
+            throw new Error('Specific data not found, please add Clinical-Console first');
+        }
+    } catch (error) {
+        console.error('Error:', error.message);
+    }
+}
+
+module.exports = {
+    getConsoleType, getWorkFlowType, getConsoleId
+};
