@@ -53,11 +53,11 @@ const data = {
   },
 };
 
-const expected = {
-  name: expect.any(String),
-  deviceType: expect.any(String),
-  webLayout: expect.any(Object),
-};
+const expected = expect.objectContaining({
+  code: expect.any(String),
+  data: expect.any(Object),
+  message: expect.any(String),
+});
 
 describe('Should Check Layout Api', () => {
   test('should add layout', async () => {
