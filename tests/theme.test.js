@@ -7,7 +7,7 @@ const request = require('supertest');
 const url = 'http://localhost:3001/api';
 
 const {
-  getThemeId,
+  getThemeById,
 } = require('./theme');
 
 const { tokenString, generateString } = require('./common');
@@ -60,11 +60,12 @@ const data = {
   },
 };
 
-const expected = expect.objectContaining({
-  code: expect.any(String),
-  data: expect.any(Object),
-  message: expect.any(String),
-});
+const expected = {
+  _id: expect.any(String),
+  name: expect.any(String),
+  deviceType: expect.any(String),
+  webTheme: expect.any(Object),
+};
 
 describe('Should Check Theme Api', () => {
   test('should add theme', async () => {
@@ -77,7 +78,7 @@ describe('Should Check Theme Api', () => {
 
   test('should update theme', async () => {
     const token = await tokenString();
-    const themeId = await getThemeId();
+    const themeId = await getThemeById();
     const result = await request(url).put(`/themes/${themeId}`).set({ Authorization: `Bearer ${token}` }).send({
       deviceType: data.deviceType,
     });
@@ -88,7 +89,7 @@ describe('Should Check Theme Api', () => {
 
   test('should delete theme', async () => {
     const token = await tokenString();
-    const themeId = await getThemeId();
+    const themeId = await getThemeById();
     const result = await request(url).delete(`/themes/${themeId}`).set({ Authorization: `Bearer ${token}` });
     console.log(result.body);
 

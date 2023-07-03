@@ -6,9 +6,9 @@ const request = require('supertest');
 
 const url = 'http://localhost:3001/api';
 
-const { getRoomWithoutBed, getBedId, getRoomId } = require('./room-beds');
+const { getRoomType, getRoomWithoutBed, getBedId, getRoomId } = require('./room-beds');
 
-const { tokenString, generateString, generateRandomNumber, generateLocationString, getString } = require('./common');
+const { tokenString, generateString, generateRandomNumber, generateLocationString } = require('./common');
 
 beforeEach(async () => {
   console.log('Before calling');
@@ -19,13 +19,13 @@ afterEach(async () => {
 });
 
 const getRoomObj = async () => {
+  const room_type = await getRoomType();
   const roomData = {
     beds: [],
     floor: generateRandomNumber(5),
-    room: generateRandomNumber(300, 200),
-    roomType: 'Normal',
-    teemsRoomId: generateString(5, 5),
-    unit: `${generateRandomNumber(5)}${getString(2, 2)}`,
+    room: generateRandomNumber(500),
+    roomType: room_type,
+    unit: generateString(4, 4),
   };
   return roomData;
 };
@@ -33,28 +33,27 @@ const getRoomObj = async () => {
 const getBedObj = async () => {
   const roomId = await getRoomWithoutBed();
   const bedData = {
-    bedNo: generateRandomNumber(5),
+    bedNo: generateRandomNumber(1),
     extension: generateString(),
     locationString: generateLocationString(),
     room: roomId,
+    tags: { category: generateString(4, 4) },
   };
   return bedData;
 };
 
-const expected = expect.objectContaining({
+const expected = {
   beds: expect.any(Array),
   floor: expect.any(String),
   room: expect.any(String),
-  teemsRoomId: expect.any(String),
   roomType: expect.any(String),
   unit: expect.any(String),
-});
+};
 
 describe('Should Check Rooms & Beds Api', () => {
   test('should add rooms', async () => {
     const token = await tokenString();
     const data = await getRoomObj();
-
     const result = await request(url).post('/rooms').set({ authorization: `Bearer ${token}` }).send(data);
     console.log(result.body);
     expect(result.status).toBe(200);
@@ -74,7 +73,7 @@ describe('Should Check Rooms & Beds Api', () => {
     })
   });
 
-  test('should assign beds to room', async () => {
+  test('should add beds to room', async () => {
     const token = await tokenString();
     const roomId = await getRoomWithoutBed();
     const bedId = await getBedId();
@@ -87,7 +86,7 @@ describe('Should Check Rooms & Beds Api', () => {
   test('should update rooms & beds', async () => {
     const token = await tokenString();
     const Id = await getRoomId();
-    const data = await getRoomObj();
+    const data = await getBedObj();
     const result = await request(url).put(`/rooms/${Id}`).set({ authorization: `Bearer ${token}` })
       .send(data);
     console.log(result.body);
@@ -102,10 +101,10 @@ describe('Should Check Rooms & Beds Api', () => {
     if (result.body.success) {
       console.log(result.body);
       expect(result.status).toBe(200);
-      expect(result.body).toMatchObject({ success: true });
       return;
     }
     console.log('bed is already assign to patient so not deleting it');
     expect(result.status).not.toBe(200);
+    expect(result.body).toMatchObject({ success: true });
   });
 });

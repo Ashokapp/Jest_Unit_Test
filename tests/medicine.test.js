@@ -27,11 +27,12 @@ const data = {
   isImageVisible: Math.random() > 0.5 ? true : false,
 };
 
-const expected = expect.objectContaining({
+const expected = {
+  _id: expect.any(String),
+  name: expect.any(String),
   code: expect.any(String),
-  data: expect.any(Object),
-  message: expect.any(String),
-})
+  imageUrl: expect.any(String),
+};
 
 describe('Should Check Medicine Api', () => {
   test('should add Medicine', async (done) => {
@@ -58,13 +59,12 @@ describe('Should Check Medicine Api', () => {
     const token = await tokenString();
     const Id = await getMedicineId();
     const result = await request(url).delete(`/medicines/${Id}`).set({ authorization: `Bearer ${token}` });
-    console.log(result.body.status);
     if (result.body.success) {
+      console.log(result.body);
       expect(result.status).toBe(200);
       expect(result.body).toMatchObject({ success: true });
       return;
     }
-    console.log('medicine assigned to patient');
-    expect(result.body.success).not.toBe('true');
+    expect(result.status).toBe(500);
   });
 });

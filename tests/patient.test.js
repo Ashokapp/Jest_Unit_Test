@@ -10,7 +10,7 @@ const {
   getBedId, getGenderCode, getPatientId,
 } = require('./patient');
 
-const { tokenString, generateString, generateRandomNumber, generateHexCode, getString } = require('./common');
+const { tokenString, generateString, generateRandomNumber } = require('./common');
 
 beforeEach(async () => {
   console.log('Before calling');
@@ -21,41 +21,33 @@ afterEach(async () => {
 });
 
 const getObj = async () => {
-  const bedId = await getBedId();
+  const Id = await getBedId();
   const genderCode = await getGenderCode();
-  const babyDetail = Math.random() > 0.5 ? true : false;
   const data = {
-    firstName: generateString(10, 10),
-    lastName: generateString(10, 10),
-    age: generateRandomNumber(60, 15),
-    gender: genderCode,
+    age: generateRandomNumber(50),
     anonymous: Math.random() > 0.5 ? true : false,
-    isBaby: babyDetail,
-    babies: babyDetail ? [
-      {
-        babyName: generateString(),
-        babyGender: genderCode,
-        foreground: generateHexCode(),
-        background: generateHexCode(),
-      }
-    ] : [],
-    patientId: `P${generateRandomNumber(9999, 1000)}`,
-    bed: bedId,
-    currentVisitId: `V${generateRandomNumber(9999, 1000)}`,
-    discharged: false
+    bed: Id,
+    currentVisitId: generateString(),
+    discharged: false,
+    firstName: generateString(8, 8),
+    gender: genderCode,
+    lastName: generateString(8, 8),
+    patientId: generateString(),
+    // isBaby: Math.random() > 0.5 ? true : false,
+    // babies: isBaby ? [{ babyName: generateString(4, 4), babyGender: genderCode }] : '',
   };
   return data;
 };
 
-const expected = expect.objectContaining({
-  firstName: expect.any(String),
-  lastName: expect.any(String),
-  isBaby: expect.any(Boolean),
-  anonymous: expect.any(Boolean),
-  patientId: expect.any(String),
+const expected = {
+  age: expect.any(Number),
   currentVisitId: expect.any(String),
-})
-
+  firstName: expect.any(String),
+  gender: expect.any(String),
+  lastName: expect.any(String),
+  patientId: expect.any(String),
+  status: expect.any(String),
+};
 
 describe('Should Check Patients Api', () => {
   test('should admit patient', async () => {
@@ -82,12 +74,8 @@ describe('Should Check Patients Api', () => {
     const token = await tokenString();
     const Id = await getPatientId();
     const result = await request(url).delete(`/patients/${Id}`).set({ authorization: `Bearer ${token}` });
-    if (result.body.success) {
-      console.log(result.body);
-      expect(result.status).toBe(200);
-      expect(result.body).toMatchObject({ success: true });
-      return;
-    }
-    expect(result.status).not.toBe(200);
+    console.log(result.body);
+    expect(result.status).toBe(200);
+    expect(result.body).toMatchObject({ success: true });
   });
 });
