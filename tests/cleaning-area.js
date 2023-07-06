@@ -1,6 +1,6 @@
 const phin = require('phin');
 
-const { tokenString } = require('./common');
+const { tokenString, logger } = require('./common');
 
 async function getAreaId() {
     try {
@@ -20,10 +20,11 @@ async function getAreaId() {
             const result = specificData[index]._id;
             return result;
         } else {
-            throw new Error('Specific data not found, please add Cleaning-Area first');
+            // throw new Error('Specific data not found, please add Cleaning-Area first');
+            throw new Error();
         }
     } catch (error) {
-        console.error('Error:', error.message);
+        logger.error(error);
     }
 }
 

@@ -1,6 +1,6 @@
 const phin = require('phin');
 
-const { tokenString } = require('./common');
+const { tokenString, logger } = require('./common');
 
 async function getMedicineId() {
   try {
@@ -19,10 +19,11 @@ async function getMedicineId() {
       const result = specificData[index]._id;
       return result;
     } else {
-      throw new Error('Specific data not found, please add medicine first');
+      // throw new Error('Specific data not found, please add medicine first');
+      throw new Error();
     }
   } catch (error) {
-    console.error('Error:', error.message);
+    logger.error(error);
   }
 }
 
@@ -43,7 +44,7 @@ async function getPatientId() {
 
     return result;
   } catch (error) {
-    console.error('Error:', error.message);
+    logger.error(error);
   }
 }
 
@@ -65,10 +66,11 @@ async function getSchemaId() {
       const result = specificData[index]._id;
       return result;
     } else {
-      throw new Error('Specific data not found, please add scheduled-medicine first');
+      // throw new Error('Specific data not found, please add scheduled-medicine first');
+      throw new Error();
     }
   } catch (error) {
-    console.error('Error:', error.message);
+    logger.error(error);
   }
 }
 

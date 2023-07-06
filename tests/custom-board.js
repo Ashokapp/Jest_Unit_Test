@@ -1,6 +1,6 @@
 const phin = require('phin');
 
-const { tokenString } = require('./common');
+const { tokenString, logger } = require('./common');
 
 async function getCustomDeviceType() {
     try {
@@ -18,7 +18,7 @@ async function getCustomDeviceType() {
         const result = arrOfData[indexNumber].code;
         return result;
     } catch (error) {
-        console.error('Error:', error.message);
+        logger.error(error);
     }
 }
 
@@ -40,10 +40,11 @@ async function getCustomDeviceId() {
             const result = specificData[index]._id;
             return result;
         } else {
-            throw new Error('Specific data not found, please add custom board first');
+            // throw new Error('Specific data not found, please add custom board first');
+            throw new Error();
         }
     } catch (error) {
-        console.error('Error:', error.message);
+        logger.error(error);
     }
 }
 

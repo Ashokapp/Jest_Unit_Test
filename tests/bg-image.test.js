@@ -6,9 +6,9 @@ const request = require('supertest');
 
 const url = 'http://localhost:3001/api';
 
-const { getBgImageId } = require('./bgimage');
+const { getBgImageId } = require('./bg-image');
 
-const { tokenString, generateString } = require('./common');
+const { tokenString, generateString, logger } = require('./common');
 
 beforeEach(async () => {
   console.log('Before calling');
@@ -23,14 +23,15 @@ const data = {
   image: 'backgroundImage.png',
 };
 
-const expected = {
+const expected = expect.objectContaining({
   code: expect.any(String),
   message: expect.any(String),
   data: expect.objectContaining({
     name: expect.any(String),
     image: expect.any(String),
   }),
-};
+})
+
 
 describe('Should Check Background-Images Api', () => {
   test('should add background-image', async () => {
@@ -38,10 +39,12 @@ describe('Should Check Background-Images Api', () => {
 
     const result = await request(url).post('/background-image').set({ authorization: `Bearer ${token}` })
       .send(data);
-    console.log(result.body);
-
+    if (result.statusCode !== 200) {
+      logger.error('should add background-image', result.body);
+    }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
+    logger.info('should add background-image', result.body);
   });
 
   test('should update background-image', async () => {
@@ -49,9 +52,12 @@ describe('Should Check Background-Images Api', () => {
     const Id = await getBgImageId();
     const result = await request(url).put(`/background-image/${Id}`).set({ authorization: `Bearer ${token}` })
       .send(data.name);
-    console.log(result.body);
+    if (result.statusCode !== 200) {
+      logger.error('should update background-image', result.body);
+    }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
+    logger.info('should update background-image', result.body);
   });
 
   test('should delete background-image', async () => {
@@ -59,9 +65,11 @@ describe('Should Check Background-Images Api', () => {
 
     const Id = await getBgImageId();
     const result = await request(url).delete(`/background-image/${Id}`).set({ authorization: `Bearer ${token}` });
-    console.log(result.body);
-
+    if (result.statusCode !== 200) {
+      logger.error('should delete background-image', result.body);
+    }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
+    logger.info('should delete background-image', result.body);
   });
 });

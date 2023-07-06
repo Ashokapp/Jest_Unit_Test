@@ -10,7 +10,7 @@ const {
   getMedicineId,
 } = require('./medicine');
 
-const { tokenString, generateString } = require('./common');
+const { tokenString, generateString, logger } = require('./common');
 
 beforeEach(async () => {
   console.log('Before calling');
@@ -34,14 +34,16 @@ const expected = expect.objectContaining({
 })
 
 describe('Should Check Medicine Api', () => {
-  test('should add Medicine', async (done) => {
+  test('should add Medicine', async () => {
     const token = await tokenString();
     const result = await request(url).post('/medicines').set({ authorization: `Bearer ${token}` })
       .send(data);
-    console.log(result.body);
+    if (result.statusCode !== 200) {
+      logger.error('should add Medicine', result.body);
+    }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
-    done();
+    logger.info('should add Medicine', result.body);
   });
 
   test('should update Medicine', async () => {
@@ -49,22 +51,23 @@ describe('Should Check Medicine Api', () => {
     const Id = await getMedicineId();
     const result = await request(url).put(`/medicines/${Id}`).set({ authorization: `Bearer ${token}` })
       .send(data.name);
-    console.log(result.body);
+    if (result.statusCode !== 200) {
+      logger.error('should update Medicine', result.body);
+    }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
+    logger.info('should update Medicine', result.body);
   });
 
   test('should delete Medicine', async () => {
     const token = await tokenString();
     const Id = await getMedicineId();
     const result = await request(url).delete(`/medicines/${Id}`).set({ authorization: `Bearer ${token}` });
-    console.log(result.body.status);
-    if (result.body.success) {
-      expect(result.status).toBe(200);
-      expect(result.body).toMatchObject({ success: true });
-      return;
+    if (result.statusCode !== 200) {
+      logger.error('should delete Medicine', result.body);
     }
-    console.log('medicine assigned to patient');
-    expect(result.body.success).not.toBe('true');
+    expect(result.status).toBe(200);
+    expect(result.body).toMatchObject(expected);
+    logger.info('should delete Medicine', result.body);
   });
 });

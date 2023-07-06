@@ -1,6 +1,6 @@
 const phin = require('phin');
 
-const { tokenString } = require('./common');
+const { tokenString, logger } = require('./common');
 
 async function getBgImageId() {
   try {
@@ -21,7 +21,7 @@ async function getBgImageId() {
     const result = specificData[index]._id;
     return result;
   } catch (error) {
-    console.error('Error:', error.message);
+    logger.error(error);
   }
 }
 

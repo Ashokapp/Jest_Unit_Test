@@ -11,7 +11,7 @@ const {
 } = require('./room-status');
 
 const {
-  tokenString, generateString, toUpperCase, generateRandomNumber, generateHexCode,
+  tokenString, generateString, toUpperCase, generateRandomNumber, generateHexCode, logger
 } = require('./common');
 
 beforeEach(() => {
@@ -42,7 +42,7 @@ const getObj = async () => {
   return data;
 }
 
-const expected = {
+const expected = expect.objectContaining({
   _id: expect.any(String),
   background: expect.any(String),
   flag: expect.any(String),
@@ -50,16 +50,19 @@ const expected = {
   message: expect.any(String),
   roomListPriority: expect.any(Number),
   roomType: expect.any(String),
-};
+})
 
 describe('Should Check Room-Status Api', () => {
   test('should add room-status', async () => {
     const token = await tokenString();
     const data = await getObj();
     const result = await request(url).post('/predefinedstatus').set({ Authorization: `Bearer ${token}` }).send(data);
-    console.log(result.body);
+    if (result.statusCode !== 200) {
+      logger.error('should add room-status', result.body);
+    }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
+    logger.info('should add room-status', result.body);
   });
 
   test('should update room-status', async () => {
@@ -67,21 +70,23 @@ describe('Should Check Room-Status Api', () => {
     const Id = await roomStatusId();
     const data = await getObj();
     const result = await request(url).put(`/predefinedstatus/${Id}`).set({ Authorization: `Bearer ${token}` }).send(data);
-    console.log(result.body);
+    if (result.statusCode !== 200) {
+      logger.error('should update room-status', result.body);
+    }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
+    logger.info('should update room-status', result.body);
   });
 
   test('should delete room-status', async () => {
     const token = await tokenString();
     const Id = await roomStatusId();
     const result = await request(url).delete(`/predefinedstatus/${Id}`).set({ Authorization: `Bearer ${token}` });
-    if (result.body.success) {
-      console.log(result.body);
-      expect(result.status).toBe(200);
-      expect(result.body).toMatchObject({ success: true });
-      return;
+    if (result.statusCode !== 200) {
+      logger.error('should delete room-status', result.body);
     }
-    expect(result.status).toBe(500);
+    expect(result.status).toBe(200);
+    expect(result.body).toMatchObject({ success: true });
+    logger.info('should delete room-status', result.body);
   });
 });

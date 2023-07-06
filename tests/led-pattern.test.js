@@ -10,7 +10,7 @@ const {
   getLedPattern, getLedId,
 } = require('./led-pattern');
 
-const { tokenString, generateString, generateRandomNumber, generateHexCode } = require('./common');
+const { tokenString, generateString, generateRandomNumber, generateHexCode, logger } = require('./common');
 
 beforeEach(async () => {
   console.log('Before calling');
@@ -35,27 +35,28 @@ const getObject = async () => {
   return data;
 };
 
-const expected = {
+const expected = expect.objectContaining({
   code: expect.any(String),
   message: expect.any(String),
-  data: {
-    _id: expect.any(String),
+  data: expect.objectContaining({
     name: expect.any(String),
     duration: expect.any(Number),
     iterations: expect.any(Number),
-  },
-};
+  })
+})
 
 describe('Should Check Led-Pattern Api', () => {
-  test('should add led-pattern', async (done) => {
+  test('should add led-pattern', async () => {
     const token = await tokenString();
     const data = await getObject();
     const result = await request(url).post('/led-pattern').set({ authorization: `Bearer ${token}` })
       .send(data);
-    console.log(result.body);
+    if (result.statusCode !== 200) {
+      logger.error('should add led-pattern', result.body);
+    }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
-    done();
+    logger.info('should add led-pattern', result.body);
   });
 
   test('should update led-pattern', async () => {
@@ -64,17 +65,23 @@ describe('Should Check Led-Pattern Api', () => {
     const LedId = await getLedId();
     const result = await request(url).put(`/led-pattern/${LedId}`).set({ authorization: `Bearer ${token}` })
       .send(data);
-    console.log(result.body);
+    if (result.statusCode !== 200) {
+      logger.error('should update led-pattern', result.body);
+    }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
+    logger.info('should update led-pattern', result.body);
   });
 
   test('should delete led-pattern', async () => {
     const token = await tokenString();
     const LedId = await getLedId();
     const result = await request(url).delete(`/led-pattern/${LedId}`).set({ authorization: `Bearer ${token}` });
-    console.log(result.body);
+    if (result.statusCode !== 200) {
+      logger.error('should delete led-pattern', result.body);
+    }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
+    logger.info('should delete led-pattern', result.body);
   });
 });

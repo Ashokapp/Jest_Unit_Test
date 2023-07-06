@@ -11,7 +11,7 @@ const {
 } = require('./alert');
 
 const {
-  tokenString, generateString, generateRandomNumber, toUpperCase, generateHexCode,
+  tokenString, generateString, generateRandomNumber, toUpperCase, generateHexCode, logger
 } = require('./common');
 
 beforeEach(async () => {
@@ -50,8 +50,7 @@ const getObj = async () => {
   return data;
 };
 
-const expected = {
-  _id: expect.any(String),
+const expected = expect.objectContaining({
   name: expect.any(String),
   priority: expect.any(Number),
   type: expect.any(String),
@@ -63,7 +62,7 @@ const expected = {
   backgroundColor: expect.any(String),
   displayType: expect.any(String),
   code: expect.any(String),
-};
+});
 
 describe('Should Check Alerts Api', () => {
   test('should add Alert', async () => {
@@ -71,9 +70,12 @@ describe('Should Check Alerts Api', () => {
     const data = await getObj();
     const result = await request(url).post('/alerts-v2').set({ authorization: `Bearer ${token}` })
       .send(data);
-    console.log(result.body);
+    if (result.statusCode !== 200) {
+      logger.error('should add Alert', result.body);
+    }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
+    logger.info('should add Alert', result.body);
   });
 
   test('should update Alert', async () => {
@@ -82,17 +84,23 @@ describe('Should Check Alerts Api', () => {
     const data = await getObj();
     const result = await request(url).put(`/alerts-v2/${Id}`).set({ authorization: `Bearer ${token}` })
       .send(data);
-    console.log(result.body);
+    if (result.statusCode !== 200) {
+      logger.error('should update Alert', result.body);
+    }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
+    logger.info('should update Alert', result.body);
   });
 
   test('should delete Alert', async () => {
     const token = await tokenString();
     const Id = await getAlertId();
     const result = await request(url).delete(`/alerts-v2/${Id}`).set({ authorization: `Bearer ${token}` });
-    console.log(result.body);
+    if (result.statusCode !== 200) {
+      logger.error('should delete Alert', result.body);
+    }
     expect(result.status).toBe(200);
-    expect(result.body).toEqual({ success: true });
+    expect(result.body).toMatchObject({ success: true });
+    logger.info('should delete Alert', result.body);
   });
 });

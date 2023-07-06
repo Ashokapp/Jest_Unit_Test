@@ -1,6 +1,6 @@
 const phin = require('phin');
 
-const { tokenString } = require('./common');
+const { tokenString, logger } = require('./common');
 
 async function getIconId() {
   try {
@@ -19,10 +19,11 @@ async function getIconId() {
       const result = specificData[index]._id;
       return result;
     } else {
-      throw new Error('Specific data not found, please add footer-image first');
+      // throw new Error('Specific data not found, please add footer-image first');
+      throw new Error();
     }
   } catch (error) {
-    console.error('Error:', error.message);
+    logger.error(error);
   }
 }
 

@@ -10,7 +10,7 @@ const {
   getThemeId,
 } = require('./theme');
 
-const { tokenString, generateString } = require('./common');
+const { tokenString, generateString, logger } = require('./common');
 
 beforeEach(async () => {
   console.log('Before calling');
@@ -70,9 +70,12 @@ describe('Should Check Theme Api', () => {
   test('should add theme', async () => {
     const token = await tokenString();
     const result = await request(url).post('/themes').set({ Authorization: `Bearer ${token}` }).send(data);
-    console.log(result.body);
+    if (result.statusCode !== 200) {
+      logger.error('should add theme', result.body);
+    }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
+    logger.info('should add theme', result.body);
   });
 
   test('should update theme', async () => {
@@ -81,22 +84,23 @@ describe('Should Check Theme Api', () => {
     const result = await request(url).put(`/themes/${themeId}`).set({ Authorization: `Bearer ${token}` }).send({
       deviceType: data.deviceType,
     });
-    console.log(result.body);
+    if (result.statusCode !== 200) {
+      logger.error('should update theme', result.body);
+    }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
+    logger.info('should update theme', result.body);
   });
 
   test('should delete theme', async () => {
     const token = await tokenString();
     const themeId = await getThemeId();
     const result = await request(url).delete(`/themes/${themeId}`).set({ Authorization: `Bearer ${token}` });
-    console.log(result.body);
-
-    if (result.body.success) {
-      expect(result.status).toBe(200);
-      expect(result.body).toMatchObject({ success: true });
-      return;
+    if (result.statusCode !== 200) {
+      logger.error('should delete theme', result.body);
     }
-    expect(result.status).toBe(500);
+    expect(result.status).toBe(200);
+    expect(result.body).toMatchObject({ success: true });
+    logger.info('should delete theme', result.body);
   });
 });

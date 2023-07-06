@@ -1,6 +1,6 @@
 const phin = require('phin');
 
-const { tokenString } = require('./common');
+const { tokenString, logger } = require('./common');
 
 function getDeviceType() {
   const data = ['PATIENTBOARD', 'DOORBOARD', 'NURSEBOARD', 'CUSTOMBOARD', 'TEAMVIZ'];
@@ -25,10 +25,11 @@ async function getThemeId() {
       const result = specificData[index]._id;
       return result;
     } else {
-      throw new Error('Specific data not found, please add theme first');
+      // throw new Error('Specific data not found, please add theme first');
+      throw new Error();
     }
   } catch (error) {
-    console.error('Error:', error.message);
+    logger.error(error);
   }
 }
 

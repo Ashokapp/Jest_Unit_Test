@@ -1,5 +1,5 @@
 const phin = require('phin');
-const { tokenString } = require('./common');
+const { tokenString, logger } = require('./common');
 async function getColor() {
     try {
         const token = await tokenString();
@@ -16,7 +16,7 @@ async function getColor() {
         const result = arrOfData[indexNumber].name;
         return result;
     } catch (error) {
-        console.error('Error:', error.message);
+        logger.error(error);
     }
 }
 
@@ -38,10 +38,11 @@ async function getLedProfileId() {
             const result = specificData[index]._id;
             return result;
         } else {
-            throw new Error('Specific data not found, please add led-profile first');
+            // throw new Error('Specific data not found, please add led-profile first');
+            throw new Error();
         }
     } catch (error) {
-        console.error('Error:', error.message);
+        logger.error(error);
     }
 }
 

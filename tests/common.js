@@ -1,8 +1,39 @@
 const phin = require('phin');
 const { ObjectId } = require('mongodb');
-const randomEmail = require('random-email');
 
+const randomEmail = require('random-email');
 randomEmail({ domain: 'gmail.com' });
+
+const winston = require('winston');
+
+const logger = winston.createLogger({
+  level: 'info',
+  json: true,
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.printf(({ level, message, timestamp, ...rest }) => {
+      const logData = {
+        level,
+        message,
+        timestamp,
+        ...rest,
+      };
+      return JSON.stringify(logData, null, 2) + ',';
+    })
+  ),
+
+  transports: [
+    new winston.transports.File({
+      filename: 'fail-test.log',
+      level: 'error',
+    }),
+    new winston.transports.File({
+      filename: 'All-test.log',
+      level: 'info',
+    }),
+    new winston.transports.Console(),
+  ]
+});
 
 function convertIdToObjectID(id) {
   try {
@@ -30,7 +61,7 @@ async function tokenString() {
     const authToken = JSON.parse(response.body).token;
     return authToken;
   } catch (error) {
-    console.error('Error:', error.message);
+    logger.error(error);
   }
 }
 
@@ -110,5 +141,6 @@ module.exports = {
   randomEmail,
   getNumberWithCode,
   getString,
-  convertIdToObjectID
+  convertIdToObjectID,
+  logger,
 };

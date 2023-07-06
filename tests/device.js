@@ -1,6 +1,6 @@
 const phin = require('phin');
 
-const { tokenString } = require('./common');
+const { tokenString, logger } = require('./common');
 
 async function getDeviceType() {
   try {
@@ -19,7 +19,7 @@ async function getDeviceType() {
 
     return result;
   } catch (error) {
-    console.error('Error:', error.message);
+    logger.error(error);
   }
 }
 
@@ -42,10 +42,11 @@ async function getDevicesId() {
       const result = specificData[index]._id;
       return result;
     } else {
-      throw new Error('Specific data not found, please add device first');
+      // throw new Error('Specific data not found, please add device first');
+      throw new Error();
     }
   } catch (error) {
-    console.error('Error:', error.message);
+    logger.error(error);
   }
 }
 

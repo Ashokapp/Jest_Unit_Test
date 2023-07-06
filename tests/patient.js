@@ -1,6 +1,6 @@
 const phin = require('phin');
 
-const { tokenString } = require('./common');
+const { tokenString, logger } = require('./common');
 
 async function getBedId() {
   try {
@@ -20,11 +20,9 @@ async function getBedId() {
       const index = Math.floor(Math.random() * specificData.length);
       const result = specificData[index].beds[0];
       return result;
-    } else {
-      throw new Error('Specific data not found, please => add Room & Assign Bed first on rrom-beds module');
     }
   } catch (error) {
-    console.error('Error:', error.message);
+    logger.error(error);
   }
 }
 
@@ -44,7 +42,7 @@ async function getGenderCode() {
     const data = result[index].code;
     return data;
   } catch (error) {
-    console.error('Error:', error.message);
+    logger.error(error);
   }
 }
 
@@ -64,11 +62,9 @@ async function getPatientId() {
       const index = Math.floor(Math.random() * specificData.length);
       const result = specificData[index]._id;
       return result;
-    } else {
-      throw new Error('Specific data not found, please add patient first');
     }
   } catch (error) {
-    console.error('Error:', error.message);
+    logger.error(error);
   }
 }
 

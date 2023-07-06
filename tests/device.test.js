@@ -10,7 +10,7 @@ const {
   getDeviceType, getDevicesId,
 } = require('./device');
 
-const { tokenString, generateString } = require('./common');
+const { tokenString, generateString, logger } = require('./common');
 
 beforeEach(async () => {
   console.log('Before calling');
@@ -31,12 +31,12 @@ const getObj = async () => {
   return data;
 };
 
-const expected = {
+const expected = expect.objectContaining({
   deviceId: expect.any(String),
   deviceType: expect.any(String),
   MDMDeviceID: expect.any(String),
   MDMDeviceURL: expect.any(String),
-};
+})
 
 describe('Should Check Devices Api', () => {
   test('should add device', async () => {
@@ -45,9 +45,12 @@ describe('Should Check Devices Api', () => {
 
     const result = await request(url).post('/devices').set({ authorization: `Bearer ${token}` })
       .send(data);
-    console.log(result.body);
+    if (result.statusCode !== 200) {
+      logger.error('should add device', result.body);
+    }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
+    logger.info('should add device', result.body);
   });
 
   test('should update device data', async () => {
@@ -57,9 +60,12 @@ describe('Should Check Devices Api', () => {
 
     const result = await request(url).put(`/devices/${deviceId}`).set({ authorization: `Bearer ${token}` })
       .send(data.deviceId);
-    console.log(result.body);
+    if (result.statusCode !== 200) {
+      logger.error('should update device data', result.body);
+    }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
+    logger.info('should update device data', result.body);
   });
 
   test('should delete device data', async () => {
@@ -67,8 +73,11 @@ describe('Should Check Devices Api', () => {
     const token = await tokenString();
 
     const result = await request(url).delete(`/devices/${deviceId}`).set({ authorization: `Bearer ${token}` });
-    console.log(result.body);
+    if (result.statusCode !== 200) {
+      logger.error('should delete device data', result.body);
+    }
     expect(result.status).toBe(200);
-    expect(result.body).toEqual({ success: true });
+    expect(result.body).toMatchObject({ success: true });
+    logger.info('should delete device data', result.body);
   });
 });

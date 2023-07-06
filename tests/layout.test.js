@@ -10,7 +10,7 @@ const {
   getDeviceType, getLayoutId,
 } = require('./layout');
 
-const { tokenString, generateString } = require('./common');
+const { tokenString, generateString, logger } = require('./common');
 
 beforeEach(async () => {
   console.log('Before calling');
@@ -63,9 +63,12 @@ describe('Should Check Layout Api', () => {
   test('should add layout', async () => {
     const token = await tokenString();
     const result = await request(url).post('/layouts').set({ Authorization: `Bearer ${token}` }).send(data);
-    console.log(result.body);
+    if (result.statusCode !== 200) {
+      logger.error('should add layout', result.body);
+    }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
+    logger.info('should add layout', result.body);
   });
 
   test('should update layout', async () => {
@@ -75,22 +78,23 @@ describe('Should Check Layout Api', () => {
       name: data.name,
       deviceType: data.deviceType,
     });
-    console.log(result.body);
+    if (result.statusCode !== 200) {
+      logger.error('should update layout', result.body);
+    }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
+    logger.info('should update layout', result.body);
   });
 
   test('should delete layout', async () => {
     const token = await tokenString();
     const id = await getLayoutId();
     const result = await request(url).delete(`/layouts/${id}`).set({ Authorization: `Bearer ${token}` });
-    if (result.body.success) {
-      console.log(result.body);
-      expect(result.status).toBe(200);
-      expect(result.body).toMatchObject({ success: true });
-      return;
+    if (result.statusCode !== 200) {
+      logger.error('should delete layout', result.body);
     }
-    expect(result.status).toBe(500);
-    expect(result.body).toMatchObject({ success: false });
+    expect(result.status).toBe(200);
+    expect(result.body).toMatchObject({ success: true });
+    logger.info('should delete layout', result.body);
   });
 });

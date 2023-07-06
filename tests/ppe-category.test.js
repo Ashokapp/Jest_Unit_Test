@@ -10,7 +10,7 @@ const {
     getTypeOfPPE, getPPEId,
 } = require('./ppe-category');
 
-const { tokenString, generateString, generateRandomNumber } = require('./common');
+const { tokenString, generateString, generateRandomNumber, logger } = require('./common');
 
 beforeEach(async () => {
     console.log('Before calling');
@@ -31,12 +31,12 @@ const getObj = async () => {
     return data;
 }
 
-const expected = {
+const expected = expect.objectContaining({
     name: expect.any(String),
     icon: expect.any(String),
     ppeType: expect.any(String),
     priority: expect.any(Number),
-};
+})
 
 describe('Should Check PPE-Category Api', () => {
     test('should add PPE-Category', async () => {
@@ -45,9 +45,12 @@ describe('Should Check PPE-Category Api', () => {
 
         const result = await request(url).post('/ppe-categories').set({ authorization: `Bearer ${token}` })
             .send(data);
-        console.log(result.body);
+        if (result.statusCode !== 200) {
+            logger.error('should add PPE-Category', result.body);
+        }
         expect(result.status).toBe(200);
         expect(result.body).toMatchObject(expected);
+        logger.info('should add PPE-Category', result.body);
     });
 
     test('Should Update PPE-Category', async () => {
@@ -57,9 +60,12 @@ describe('Should Check PPE-Category Api', () => {
 
         const result = await request(url).put(`/ppe-categories/${Id}`).set({ authorization: `Bearer ${token}` })
             .send(data);
-        console.log(result.body);
+        if (result.statusCode !== 200) {
+            logger.error('Should Update PPE-Category', result.body);
+        }
         expect(result.status).toBe(200);
         expect(result.body).toMatchObject(expected);
+        logger.info('Should Update PPE-Category', result.body);
     });
 
     test('Should Delete PPE-Category', async () => {
@@ -67,8 +73,11 @@ describe('Should Check PPE-Category Api', () => {
         const token = await tokenString();
 
         const result = await request(url).delete(`/ppe-categories/${Id}`).set({ authorization: `Bearer ${token}` });
-        console.log(result.body);
+        if (result.statusCode !== 200) {
+            logger.error('Should Delete PPE-Category', result.body);
+        }
         expect(result.status).toBe(200);
         expect(result.body).toMatchObject({ success: true });
+        logger.info('Should Delete PPE-Category', result.body);
     });
 });

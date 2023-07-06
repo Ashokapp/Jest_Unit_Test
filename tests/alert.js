@@ -1,6 +1,6 @@
 const phin = require('phin');
 
-const { tokenString } = require('./common');
+const { tokenString, logger } = require('./common');
 
 async function getAlertId() {
   try {
@@ -20,7 +20,7 @@ async function getAlertId() {
       return result;
     }
   } catch (error) {
-    console.error('Error:', error.message);
+    logger.error(error);
   }
 }
 
@@ -39,7 +39,7 @@ async function getLedPattern() {
     const result = arrOfData[index]._id;
     return result;
   } catch (error) {
-    console.error('Error:', error.message);
+    logger.error(error);
   }
 }
 

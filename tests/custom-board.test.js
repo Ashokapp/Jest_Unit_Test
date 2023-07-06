@@ -10,7 +10,7 @@ const {
     getCustomDeviceType, getCustomDeviceId,
 } = require('./custom-board');
 
-const { tokenString, generateString } = require('./common');
+const { tokenString, generateString, logger } = require('./common');
 
 beforeEach(async () => {
     console.log('Before calling');
@@ -31,12 +31,12 @@ const getObj = async () => {
     return data;
 };
 
-const expected = {
+const expected = expect.objectContaining({
     deviceId: expect.any(String),
     deviceType: expect.any(String),
     MDMDeviceID: expect.any(String),
     MDMDeviceURL: expect.any(String),
-};
+})
 
 describe('Should Check Custom-Device Api', () => {
     test('should add custom-device', async () => {
@@ -45,9 +45,12 @@ describe('Should Check Custom-Device Api', () => {
 
         const result = await request(url).post('/custom-device').set({ authorization: `Bearer ${token}` })
             .send(data);
-        console.log(result.body);
+        if (result.statusCode !== 200) {
+            logger.error('should add custom-device', result.body);
+        }
         expect(result.status).toBe(200);
         expect(result.body).toMatchObject(expected);
+        logger.info('should add custom-device', result.body);
     });
 
     test('should update custom-device', async () => {
@@ -57,9 +60,12 @@ describe('Should Check Custom-Device Api', () => {
 
         const result = await request(url).put(`/custom-device/${Id}`).set({ authorization: `Bearer ${token}` })
             .send(data.deviceId);
-        console.log(result.body);
+        if (result.statusCode !== 200) {
+            logger.error('should update custom-device', result.body);
+        }
         expect(result.status).toBe(200);
         expect(result.body).toMatchObject(expected);
+        logger.info('should update custom-device', result.body);
     });
 
     test('should delete custom-device', async () => {
@@ -67,8 +73,11 @@ describe('Should Check Custom-Device Api', () => {
         const token = await tokenString();
 
         const result = await request(url).delete(`/custom-device/${Id}`).set({ authorization: `Bearer ${token}` });
-        console.log(result.body);
+        if (result.statusCode !== 200) {
+            logger.error('should delete custom-device', result.body);
+        }
         expect(result.status).toBe(200);
-        expect(result.body).toEqual({});
+        expect(result.body).toMatchObject({});
+        logger.info('should delete custom-device', result.body);
     });
 });

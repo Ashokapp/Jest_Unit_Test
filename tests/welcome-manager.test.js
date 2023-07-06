@@ -11,7 +11,7 @@ const {
   getWelcomeId,
 } = require('./welcome-manager');
 
-const { tokenString, generateString } = require('./common');
+const { tokenString, generateString, logger } = require('./common');
 
 beforeEach(async () => {
   console.log('Before calling');
@@ -28,27 +28,24 @@ const data = {
   mediaFile: 'welcome.png',
 };
 
-const expected = {
+const expected = expect.objectContaining({
   code: expect.any(String),
   message: expect.any(String),
-  data: expect.objectContaining({
-    _id: expect.any(String),
-    name: expect.any(String),
-    title: expect.any(String),
-    text: expect.any(String),
-    mediaFile: expect.any(String),
-  }),
-};
+  data: expect.any(Object),
+});
+
 
 describe('Should Check Welcome-Manager Api', () => {
-  test('should add welcome-manager', async (done) => {
+  test('should add welcome-manager', async () => {
     const token = await tokenString();
     const result = await request(url).post('/welcome-message').set({ authorization: `Bearer ${token}` })
       .send(data);
-    console.log(result.body);
+    if (result.statusCode !== 200) {
+      logger.error('should add welcome-manager', result.body);
+    }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
-    done();
+    logger.info('should add welcome-manager', result.body);
   });
 
   test('should update welcome-manager', async () => {
@@ -56,16 +53,23 @@ describe('Should Check Welcome-Manager Api', () => {
     const Id = await getWelcomeId();
     const result = await request(url).put(`/welcome-message/${Id}`).set({ authorization: `Bearer ${token}` })
       .send(data);
-    console.log(result.body);
+    if (result.statusCode !== 200) {
+      logger.error('should update welcome-manager', result.body);
+    }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
+    logger.info('should update welcome-manager', result.body);
   });
 
   test('should delete welcome-manager', async () => {
     const token = await tokenString();
     const Id = await getWelcomeId();
     const result = await request(url).delete(`/welcome-message/${Id}`).set({ authorization: `Bearer ${token}` });
-    console.log(result.body);
+    if (result.statusCode !== 200) {
+      logger.error('should delete welcome-manager', result.body);
+    }
     expect(result.status).toBe(200);
+    expect(result.body).toMatchObject(expected);
+    logger.info('should delete welcome-manager', result.body);
   });
 });

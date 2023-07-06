@@ -8,7 +8,7 @@ const url = 'http://localhost:3001/api';
 
 const { getServiceId } = require('./service-type');
 
-const { tokenString, generateString, generateRandomNumber } = require('./common');
+const { tokenString, generateString, generateRandomNumber, logger } = require('./common');
 
 beforeEach(async () => {
     console.log('Before calling');
@@ -27,11 +27,11 @@ const data = {
 
 data.dwellDuration = data.isDwellDurationSet ? generateRandomNumber(5) : '';
 
-const expected = {
+const expected = expect.objectContaining({
     name: expect.any(String),
     description: expect.any(String),
     isDwellDurationSet: expect.any(Boolean),
-};
+})
 
 describe('Should Check Service-Type Api', () => {
     test('Should Add Service-Type', async () => {
@@ -39,9 +39,12 @@ describe('Should Check Service-Type Api', () => {
 
         const result = await request(url).post('/service-type').set({ authorization: `Bearer ${token}` })
             .send(data);
-        console.log(result.body);
+        if (result.statusCode !== 200) {
+            logger.error('Should Add Service-Type', result.body);
+        }
         expect(result.status).toBe(200);
         expect(result.body).toMatchObject(expected);
+        logger.info('Should Add Service-Type', result.body);
     });
 
     test('Should Update Service-Type', async () => {
@@ -50,9 +53,12 @@ describe('Should Check Service-Type Api', () => {
 
         const result = await request(url).put(`/service-type/${Id}`).set({ authorization: `Bearer ${token}` })
             .send(data.deviceId);
-        console.log(result.body);
+        if (result.statusCode !== 200) {
+            logger.error('Should Update Service-Type', result.body);
+        }
         expect(result.status).toBe(200);
         expect(result.body).toMatchObject(expected);
+        logger.info('Should Update Service-Type', result.body);
     });
 
     test('Should Delete Service-Type', async () => {
@@ -60,8 +66,11 @@ describe('Should Check Service-Type Api', () => {
         const token = await tokenString();
 
         const result = await request(url).delete(`/service-type/${Id}`).set({ authorization: `Bearer ${token}` });
-        console.log(result.body);
+        if (result.statusCode !== 200) {
+            logger.error('Should Delete Service-Type', result.body);
+        }
         expect(result.status).toBe(200);
         expect(result.body).toMatchObject({ success: true });
+        logger.info('Should Delete Service-Type', result.body);
     });
 });

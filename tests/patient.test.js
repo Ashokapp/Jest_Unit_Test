@@ -10,7 +10,7 @@ const {
   getBedId, getGenderCode, getPatientId,
 } = require('./patient');
 
-const { tokenString, generateString, generateRandomNumber, generateHexCode, getString } = require('./common');
+const { tokenString, generateString, generateRandomNumber, generateHexCode, logger } = require('./common');
 
 beforeEach(async () => {
   console.log('Before calling');
@@ -56,15 +56,17 @@ const expected = expect.objectContaining({
   currentVisitId: expect.any(String),
 })
 
-
 describe('Should Check Patients Api', () => {
   test('should admit patient', async () => {
     const token = await tokenString();
     const data = await getObj();
     const result = await request(url).post('/patients').set({ authorization: `Bearer ${token}` }).send(data);
-    console.log(result.body);
+    if (result.statusCode !== 200) {
+      logger.error('should admit patient', result.body);
+    }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
+    logger.info('should admit patient', result.body);
   });
 
   test('should update patient detail', async () => {
@@ -73,21 +75,23 @@ describe('Should Check Patients Api', () => {
     const data = await getObj();
     const result = await request(url).put(`/patients/${Id}`).set({ authorization: `Bearer ${token}` })
       .send(data);
-    console.log(result.body);
+    if (result.statusCode !== 200) {
+      logger.error('should update patient', result.body);
+    }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
+    logger.info('should update patient', result.body);
   });
 
   test('should discharge patient', async () => {
     const token = await tokenString();
     const Id = await getPatientId();
     const result = await request(url).delete(`/patients/${Id}`).set({ authorization: `Bearer ${token}` });
-    if (result.body.success) {
-      console.log(result.body);
-      expect(result.status).toBe(200);
-      expect(result.body).toMatchObject({ success: true });
-      return;
+    if (result.statusCode !== 200) {
+      logger.error('should discharge patient', result.body);
     }
-    expect(result.status).not.toBe(200);
+    expect(result.status).toBe(200);
+    expect(result.body).toMatchObject({ success: true });
+    logger.info('should discharge patient', result.body);
   });
 });

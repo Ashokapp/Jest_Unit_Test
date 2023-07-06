@@ -10,7 +10,7 @@ const {
     getColor, getLedProfileId,
 } = require('./led-profile');
 
-const { tokenString, generateString } = require('./common');
+const { tokenString, generateString, logger } = require('./common');
 
 beforeEach(async () => {
     console.log('Before calling');
@@ -34,10 +34,10 @@ const getObj = async () => {
     return data;
 };
 
-const expected = {
+const expected = expect.objectContaining({
     name: expect.any(String),
     colorCodeArray: expect.any(Array),
-};
+})
 
 describe('Should Check Led-profile Api', () => {
     test('should add led-profile', async () => {
@@ -46,9 +46,12 @@ describe('Should Check Led-profile Api', () => {
 
         const result = await request(url).post('/led-color-profile').set({ authorization: `Bearer ${token}` })
             .send(data);
-        console.log(result.body);
+        if (result.statusCode !== 200) {
+            logger.error('should add led-profile', result.body);
+        }
         expect(result.status).toBe(200);
         expect(result.body).toMatchObject(expected);
+        logger.info('should add led-profile', result.body);
     });
 
     test('should update led-profile', async () => {
@@ -58,9 +61,12 @@ describe('Should Check Led-profile Api', () => {
 
         const result = await request(url).put(`/led-color-profile/${Id}`).set({ authorization: `Bearer ${token}` })
             .send(data);
-        console.log(result.body);
+        if (result.statusCode !== 200) {
+            logger.error('should update led-profile', result.body);
+        }
         expect(result.status).toBe(200);
         expect(result.body).toMatchObject(expected);
+        logger.info('should update led-profile', result.body);
     });
 
     test('should delete led-profile', async () => {
@@ -68,8 +74,11 @@ describe('Should Check Led-profile Api', () => {
         const token = await tokenString();
 
         const result = await request(url).delete(`/led-color-profile/${Id}`).set({ authorization: `Bearer ${token}` });
-        console.log(result.body);
+        if (result.statusCode !== 200) {
+            logger.error('should delete led-profile', result.body);
+        }
         expect(result.status).toBe(200);
-        expect(result.body).toEqual({ success: true });
+        expect(result.body).toMatchObject({ success: true });
+        logger.info('should delete led-profile', result.body);
     });
 });

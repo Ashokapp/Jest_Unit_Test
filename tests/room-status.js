@@ -1,6 +1,6 @@
 const phin = require('phin');
 
-const { tokenString } = require('./common');
+const { tokenString, logger } = require('./common');
 
 async function roomStatusId() {
   try {
@@ -19,10 +19,11 @@ async function roomStatusId() {
       const result = specificData[index]._id;
       return result;
     } else {
-      throw new Error('Specific data not found, please add data first');
+      // throw new Error('Specific data not found, please add data first');
+      throw new Error();
     }
   } catch (error) {
-    console.error('Error:', error.message);
+    logger.error(error);
   }
 }
 
@@ -43,7 +44,7 @@ async function getLedPattern() {
 
     return result;
   } catch (error) {
-    console.error('Error:', error.message);
+    logger.error(error);
   }
 }
 
@@ -64,7 +65,7 @@ async function getRoomType() {
 
     return result;
   } catch (error) {
-    console.error('Error:', error.message);
+    logger.error(error);
   }
 }
 
@@ -89,7 +90,7 @@ async function getLayout() {
 
     return { pbName, dbName };
   } catch (error) {
-    console.error('Error:', error.message);
+    logger.error(error);
   }
 }
 

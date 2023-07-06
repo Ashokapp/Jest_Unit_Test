@@ -8,7 +8,7 @@ const url = 'http://localhost:3001/api';
 
 const { getAreaId } = require('./cleaning-area');
 
-const { tokenString, generateString } = require('./common');
+const { tokenString, generateString, logger } = require('./common');
 
 beforeEach(async () => {
     console.log('Before calling');
@@ -23,20 +23,23 @@ const data = {
     description: generateString(),
 };
 
-const expected = {
+const expected = expect.objectContaining({
     name: expect.any(String),
     description: expect.any(String),
-};
+});
 
 describe('Should Check Cleaning-Area Api', () => {
-    test('Should Add Service-Type', async () => {
+    test('Should Add Cleaning-area', async () => {
         const token = await tokenString();
 
         const result = await request(url).post('/cleaning-area').set({ authorization: `Bearer ${token}` })
             .send(data);
-        console.log(result.body);
+        if (result.statusCode !== 200) {
+            logger.error('Should Add Cleaning-area', result.body);
+        }
         expect(result.status).toBe(200);
         expect(result.body).toMatchObject(expected);
+        logger.info('Should Add Cleaning-area', result.body);
     });
 
     test('Should Update Cleaning-Area', async () => {
@@ -44,10 +47,13 @@ describe('Should Check Cleaning-Area Api', () => {
         const token = await tokenString();
 
         const result = await request(url).put(`/cleaning-area/${Id}`).set({ authorization: `Bearer ${token}` })
-            .send(data);
-        console.log(result.body);
+            .send(data.description);
+        if (result.statusCode !== 200) {
+            logger.error('Should Update Cleaning-Area', result.body);
+        }
         expect(result.status).toBe(200);
         expect(result.body).toMatchObject(expected);
+        logger.info('Should Update Cleaning-Area', result.body);
     });
 
     test('Should Delete Cleaning-Area', async () => {
@@ -55,8 +61,11 @@ describe('Should Check Cleaning-Area Api', () => {
         const token = await tokenString();
 
         const result = await request(url).delete(`/cleaning-area/${Id}`).set({ authorization: `Bearer ${token}` });
-        console.log(result.body);
+        if (result.statusCode !== 200) {
+            logger.error('Should Delete Cleaning-Area', result.body);
+        }
         expect(result.status).toBe(200);
         expect(result.body).toMatchObject({ success: true });
+        logger.info('Should Delete Cleaning-Area', result.body);
     });
 });
