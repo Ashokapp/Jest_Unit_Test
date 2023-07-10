@@ -1,13 +1,13 @@
 const phin = require('phin');
 
-const { tokenString, logger } = require('./common');
+const { tokenString, logger, URL } = require('./common');
 
 async function getRoomWithoutBed() {
     try {
         const token = await tokenString();
 
         const response = await phin({
-            url: 'http://localhost:3001/api/rooms',
+            url: `${URL}/rooms`,
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -33,7 +33,7 @@ async function getBedId() {
     try {
         const token = await tokenString();
         const response = await phin({
-            url: 'http://localhost:3001/api/beds/not-attached-to-room',
+            url: `${URL}/beds/not-attached-to-room`,
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -57,7 +57,7 @@ async function getRoomId() {
     try {
         const token = await tokenString();
         const response = await phin({
-            url: 'http://localhost:3001/api/rooms',
+            url: `${URL}/rooms`,
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${token}`,

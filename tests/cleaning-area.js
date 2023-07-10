@@ -1,13 +1,13 @@
 const phin = require('phin');
 
-const { tokenString, logger } = require('./common');
+const { tokenString, logger, URL } = require('./common');
 
 async function getAreaId() {
     try {
         const token = await tokenString();
         const response = await phin({
             method: 'GET',
-            url: 'http://localhost:3001/api/cleaning-area',
+            url: `${URL}/cleaning-area`,
             headers: {
                 Authorization: `Bearer ${token}`,
             },

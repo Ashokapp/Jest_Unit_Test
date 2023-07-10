@@ -4,11 +4,9 @@ const {
 
 const request = require('supertest');
 
-const url = 'http://localhost:3001/api';
-
 const { getRoomWithoutBed, getBedId, getRoomId } = require('./room-beds');
 
-const { tokenString, generateString, generateRandomNumber, generateLocationString, getString, logger } = require('./common');
+const { tokenString, generateString, generateRandomNumber, generateLocationString, getString, logger, URL } = require('./common');
 
 beforeEach(async () => {
   console.log('Before calling');
@@ -55,21 +53,21 @@ describe('Should Check Rooms & Beds Api', () => {
     const token = await tokenString();
     const data = await getRoomObj();
 
-    const result = await request(url).post('/rooms').set({ authorization: `Bearer ${token} ` }).send(data);
+    const result = await request(URL).post('/rooms').set({ authorization: `Bearer ${token} ` }).send(data);
     if (result.statusCode !== 200) {
-      logger.error('should add rooms', result.body);
+      logger.error('should add rooms', result.error);
     }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
-    logger.info('should add rooms', result.body);
+    logger.info('should add rooms');
   });
 
   test('should create beds for room', async () => {
     const token = await tokenString();
     const data = await getBedObj();
-    const result = await request(url).post('/beds').set({ authorization: `Bearer ${token} ` }).send(data);
+    const result = await request(URL).post('/beds').set({ authorization: `Bearer ${token} ` }).send(data);
     if (result.statusCode !== 200) {
-      logger.error('should create beds for room', result.body);
+      logger.error('should create beds for room', result.error);
     }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject({
@@ -77,45 +75,45 @@ describe('Should Check Rooms & Beds Api', () => {
       extension: expect.any(String),
       locationString: expect.any(String),
     });
-    logger.info('should create beds for room', result.body);
+    logger.info('should create beds for room');
   });
 
   test('should assign beds to room', async () => {
     const token = await tokenString();
     const roomId = await getRoomWithoutBed();
     const bedId = await getBedId();
-    const result = await request(url).put(`/rooms/${roomId}`).set({ authorization: `Bearer ${token} ` }).send({ beds: bedId });
+    const result = await request(URL).put(`/rooms/${roomId}`).set({ authorization: `Bearer ${token} ` }).send({ beds: bedId });
     if (result.statusCode !== 200) {
-      logger.error('should assign beds to room', result.body);
+      logger.error('should assign beds to room', result.error);
     }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
-    logger.info('should assign beds to room', result.body);
+    logger.info('should assign beds to room');
   });
 
   test('should update rooms & beds', async () => {
     const token = await tokenString();
     const Id = await getRoomId();
     const data = await getRoomObj();
-    const result = await request(url).put(`/rooms/${Id}`).set({ authorization: `Bearer ${token} ` })
+    const result = await request(URL).put(`/rooms/${Id}`).set({ authorization: `Bearer ${token} ` })
       .send(data);
     if (result.statusCode !== 200) {
-      logger.error('should update rooms & beds', result.body);
+      logger.error('should update rooms & beds', result.error);
     }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
-    logger.info('should update rooms & beds', result.body);
+    logger.info('should update rooms & beds');
   });
 
   test('should delete rooms & beds', async () => {
     const token = await tokenString();
     const Id = await getRoomId();
-    const result = await request(url).delete(`/rooms/${Id}`).set({ authorization: `Bearer ${token} ` });
+    const result = await request(URL).delete(`/rooms/${Id}`).set({ authorization: `Bearer ${token} ` });
     if (result.statusCode !== 200) {
-      logger.error('should delete rooms & beds', result.body);
+      logger.error('should delete rooms & beds', result.error);
     }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject({ success: true });
-    logger.info('should delete rooms & beds', result.body);
+    logger.info('should delete rooms & beds');
   });
 });

@@ -4,13 +4,11 @@ const {
 
 const request = require('supertest');
 
-const url = 'http://localhost:3001/api';
-
 const {
   getLedPattern, flagType_visibility, getFlagId,
 } = require('./patient-flag');
 
-const { tokenString, generateString, generateRandomNumber, generateHexCode, logger } = require('./common');
+const { tokenString, generateString, generateRandomNumber, generateHexCode, logger, URL } = require('./common');
 
 beforeEach(async () => {
   console.log('Before calling');
@@ -53,39 +51,39 @@ describe('Should Check patient-flag Api', () => {
   test('should add patient-flag', async () => {
     const token = await tokenString();
     const data = await getObject();
-    const result = await request(url).post('/patientFlags').set({ Authorization: `Bearer ${token}` })
+    const result = await request(URL).post('/patientFlags').set({ Authorization: `Bearer ${token}` })
       .send(data);
     if (result.statusCode !== 200) {
-      logger.error('should add patient-flag', result.body);
+      logger.error('should add patient-flag', result.error);
     }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
-    logger.info('should add patient-flag', result.body);
+    logger.info('should add patient-flag');
   });
 
   test('should update patient-flag', async () => {
     const token = await tokenString();
     const data = await getObject();
     const Id = await getFlagId();
-    const result = await request(url).put(`/patientFlags/${Id}`).set({ Authorization: `Bearer ${token}` })
+    const result = await request(URL).put(`/patientFlags/${Id}`).set({ Authorization: `Bearer ${token}` })
       .send(data);
     if (result.statusCode !== 200) {
-      logger.error('should update patient-flag', result.body);
+      logger.error('should update patient-flag', result.error);
     }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
-    logger.info('should update patient-flag', result.body);
+    logger.info('should update patient-flag');
   });
 
   test('should delete patient-flag', async () => {
     const token = await tokenString();
     const Id = await getFlagId();
-    const result = await request(url).delete(`/patientFlags/${Id}`).set({ Authorization: `Bearer ${token}` });
+    const result = await request(URL).delete(`/patientFlags/${Id}`).set({ Authorization: `Bearer ${token}` });
     if (result.statusCode !== 200) {
-      logger.error('should delete patient-flag', result.body);
+      logger.error('should delete patient-flag', result.error);
     }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
-    logger.info('should delete patient-flag', result.body);
+    logger.info('should delete patient-flag');
   });
 });

@@ -1,12 +1,12 @@
 const phin = require('phin');
 
-const { tokenString, logger } = require('./common');
+const { tokenString, logger, URL } = require('./common');
 
 async function getMedicineId() {
   try {
     const token = await tokenString();
     const response = await phin({
-      url: 'http://localhost:3001/api/medicines',
+      url: `${URL}/medicines`,
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -32,7 +32,7 @@ async function getPatientId() {
     const token = await tokenString();
 
     const response = await phin({
-      url: 'http://localhost:3001/api/patients',
+      url: `${URL}/patients`,
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -52,7 +52,7 @@ async function getSchemaId() {
   try {
     const token = await tokenString();
     const response = await phin({
-      url: 'http://localhost:3001/api/patient-medication',
+      url: `${URL}/patient-medication`,
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,

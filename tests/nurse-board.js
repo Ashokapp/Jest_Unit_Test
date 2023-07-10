@@ -1,13 +1,13 @@
 const phin = require('phin');
 
-const { tokenString, logger } = require('./common');
+const { tokenString, logger, URL } = require('./common');
 
 async function getBedId() {
   try {
     const token = await tokenString();
 
     const response = await phin({
-      url: 'http://localhost:3001/api/rooms/empty-rooms',
+      url: `${URL}/rooms/empty-rooms`,
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -27,7 +27,7 @@ async function getNurseboardId() {
   try {
     const token = await tokenString();
     const response = await phin({
-      url: 'http://localhost:3001/api/nurseboards',
+      url: `${URL}/nurseboards`,
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,

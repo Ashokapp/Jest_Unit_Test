@@ -1,6 +1,6 @@
 const phin = require('phin');
 
-const { tokenString, logger } = require('./common');
+const { tokenString, logger, URL } = require('./common');
 
 function getDeviceType() {
   const data = ['PATIENTBOARD', 'DOORBOARD', 'NURSEBOARD', 'CUSTOMBOARD', 'TEAMVIZ'];
@@ -12,7 +12,7 @@ async function getThemeId() {
   try {
     const token = await tokenString();
     const response = await phin({
-      url: 'http://localhost:3001/api/themes',
+      url: `${URL}/themes`,
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,

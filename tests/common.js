@@ -1,14 +1,16 @@
 const phin = require('phin');
-const { ObjectId } = require('mongodb');
+const winston = require('winston');
+const dotenv = require('dotenv');
+dotenv.config();
 
 const randomEmail = require('random-email');
-randomEmail({ domain: 'gmail.com' });
 
-const winston = require('winston');
+randomEmail({ domain: 'example.com' });
+
+const URL = `http://${process.env.IP}:3001/api`;
 
 const logger = winston.createLogger({
   level: 'info',
-  json: true,
   format: winston.format.combine(
     winston.format.timestamp(),
     winston.format.printf(({ level, message, timestamp, ...rest }) => {
@@ -18,8 +20,19 @@ const logger = winston.createLogger({
         timestamp,
         ...rest,
       };
+
+      if (logData.text) {
+        const parsedData = JSON.parse(logData.text);
+        const convertedLog = {
+          ...logData,
+          text: parsedData.error
+        };
+        return JSON.stringify(convertedLog, null, 2) + ',';
+      }
+
       return JSON.stringify(logData, null, 2) + ',';
-    })
+
+    }),
   ),
 
   transports: [
@@ -35,20 +48,10 @@ const logger = winston.createLogger({
   ]
 });
 
-function convertIdToObjectID(id) {
-  try {
-    const objectId = new ObjectId(id);
-    return objectId;
-  } catch (error) {
-    console.error('Invalid ID:', error);
-    return null;
-  }
-}
-
 async function tokenString() {
   try {
     const response = await phin({
-      url: 'http://localhost:3001/api/auth/login',
+      url: `${URL}/auth/login`,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -141,6 +144,6 @@ module.exports = {
   randomEmail,
   getNumberWithCode,
   getString,
-  convertIdToObjectID,
   logger,
+  URL,
 };

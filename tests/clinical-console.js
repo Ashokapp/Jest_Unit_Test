@@ -1,13 +1,13 @@
 const phin = require('phin');
 
-const { tokenString, logger } = require('./common');
+const { tokenString, logger, URL } = require('./common');
 
 async function getConsoleType() {
     try {
         const token = await tokenString();
         const response = await phin({
             method: 'GET',
-            url: 'http://localhost:3001/api/master?code=CLINICAL_CONSOLE_TYPE',
+            url: `${URL}/master?code=CLINICAL_CONSOLE_TYPE`,
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -27,7 +27,7 @@ async function getWorkFlowType() {
         const token = await tokenString();
         const response = await phin({
             method: 'GET',
-            url: 'http://localhost:3001/api/master?code=WORKFLOW_TYPES',
+            url: `${URL}/master?code=WORKFLOW_TYPES`,
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -47,7 +47,7 @@ async function getConsoleId() {
         const token = await tokenString();
         const response = await phin({
             method: 'GET',
-            url: 'http://localhost:3001/api/clinicalconsole',
+            url: `${URL}/clinicalconsole`,
             headers: {
                 Authorization: `Bearer ${token}`,
             },

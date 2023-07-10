@@ -4,13 +4,11 @@ const {
 
 const request = require('supertest');
 
-const url = 'http://localhost:3001/api';
-
 const {
   getDeviceType, getLayoutId,
 } = require('./layout');
 
-const { tokenString, generateString, logger } = require('./common');
+const { tokenString, generateString, logger, URL } = require('./common');
 
 beforeEach(async () => {
   console.log('Before calling');
@@ -62,39 +60,39 @@ const expected = expect.objectContaining({
 describe('Should Check Layout Api', () => {
   test('should add layout', async () => {
     const token = await tokenString();
-    const result = await request(url).post('/layouts').set({ Authorization: `Bearer ${token}` }).send(data);
+    const result = await request(URL).post('/layouts').set({ Authorization: `Bearer ${token}` }).send(data);
     if (result.statusCode !== 200) {
-      logger.error('should add layout', result.body);
+      logger.error('should add layout', result.error);
     }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
-    logger.info('should add layout', result.body);
+    logger.info('should add layout');
   });
 
   test('should update layout', async () => {
     const token = await tokenString();
     const id = await getLayoutId();
-    const result = await request(url).put(`/layouts/${id}`).set({ Authorization: `Bearer ${token}` }).send({
+    const result = await request(URL).put(`/layouts/${id}`).set({ Authorization: `Bearer ${token}` }).send({
       name: data.name,
       deviceType: data.deviceType,
     });
     if (result.statusCode !== 200) {
-      logger.error('should update layout', result.body);
+      logger.error('should update layout', result.error);
     }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
-    logger.info('should update layout', result.body);
+    logger.info('should update layout');
   });
 
   test('should delete layout', async () => {
     const token = await tokenString();
     const id = await getLayoutId();
-    const result = await request(url).delete(`/layouts/${id}`).set({ Authorization: `Bearer ${token}` });
+    const result = await request(URL).delete(`/layouts/${id}`).set({ Authorization: `Bearer ${token}` });
     if (result.statusCode !== 200) {
-      logger.error('should delete layout', result.body);
+      logger.error('should delete layout', result.error);
     }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject({ success: true });
-    logger.info('should delete layout', result.body);
+    logger.info('should delete layout');
   });
 });

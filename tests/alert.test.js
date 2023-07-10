@@ -4,14 +4,12 @@ const {
 
 const request = require('supertest');
 
-const url = 'http://localhost:3001/api';
-
 const {
   getAlertId, selectType, locationInfo, displayType, getLedPattern, getSenderType, getAlertType, getBoards,
 } = require('./alert');
 
 const {
-  tokenString, generateString, generateRandomNumber, toUpperCase, generateHexCode, logger
+  tokenString, generateString, generateRandomNumber, toUpperCase, generateHexCode, logger, URL
 } = require('./common');
 
 beforeEach(async () => {
@@ -68,39 +66,39 @@ describe('Should Check Alerts Api', () => {
   test('should add Alert', async () => {
     const token = await tokenString();
     const data = await getObj();
-    const result = await request(url).post('/alerts-v2').set({ authorization: `Bearer ${token}` })
+    const result = await request(URL).post('/alerts-v2').set({ authorization: `Bearer ${token}` })
       .send(data);
     if (result.statusCode !== 200) {
-      logger.error('should add Alert', result.body);
+      logger.error('should add Alert', result.error);
     }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
-    logger.info('should add Alert', result.body);
+    logger.info('should add Alert');
   });
 
   test('should update Alert', async () => {
     const token = await tokenString();
     const Id = await getAlertId();
     const data = await getObj();
-    const result = await request(url).put(`/alerts-v2/${Id}`).set({ authorization: `Bearer ${token}` })
+    const result = await request(URL).put(`/alerts-v2/${Id}`).set({ authorization: `Bearer ${token}` })
       .send(data);
     if (result.statusCode !== 200) {
-      logger.error('should update Alert', result.body);
+      logger.error('should update Alert', result.error);
     }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
-    logger.info('should update Alert', result.body);
+    logger.info('should update Alert');
   });
 
   test('should delete Alert', async () => {
     const token = await tokenString();
     const Id = await getAlertId();
-    const result = await request(url).delete(`/alerts-v2/${Id}`).set({ authorization: `Bearer ${token}` });
+    const result = await request(URL).delete(`/alerts-v2/${Id}`).set({ authorization: `Bearer ${token}` });
     if (result.statusCode !== 200) {
-      logger.error('should delete Alert', result.body);
+      logger.error('should delete Alert', result.error);
     }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject({ success: true });
-    logger.info('should delete Alert', result.body);
+    logger.info('should delete Alert');
   });
 });

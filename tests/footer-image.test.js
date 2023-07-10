@@ -4,11 +4,9 @@ const {
 
 const request = require('supertest');
 
-const url = 'http://localhost:3001/api';
-
 const { selectMode, getIconId, getVisibleOn, getCode } = require('./footer-image');
 
-const { tokenString, generateString, generateRandomNumber, logger } = require('./common');
+const { tokenString, generateString, generateRandomNumber, logger, URL } = require('./common');
 
 beforeEach(async () => {
   console.log('Before calling');
@@ -40,37 +38,37 @@ const expected = expect.objectContaining({
 describe('Should Check Footer-Icon Api', () => {
   test('should add footer-icon', async () => {
     const token = await tokenString();
-    const result = await request(url).post('/footerImages').set({ authorization: `Bearer ${token}` }).send(data);
+    const result = await request(URL).post('/footerImages').set({ authorization: `Bearer ${token}` }).send(data);
     if (result.statusCode !== 200) {
-      logger.error('should add footer-icon', result.body);
+      logger.error('should add footer-icon', result.error);
     }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
-    logger.info('should add footer-icon', result.body);
+    logger.info('should add footer-icon');
   });
 
   test('should update footer-icon', async () => {
     const token = await tokenString();
     const Id = await getIconId();
-    const result = await request(url).put(`/footerImages/${Id}`).set({ authorization: `Bearer ${token}` })
+    const result = await request(URL).put(`/footerImages/${Id}`).set({ authorization: `Bearer ${token}` })
       .send(data);
     if (result.statusCode !== 200) {
-      logger.error('should update footer-icon', result.body);
+      logger.error('should update footer-icon', result.error);
     }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
-    logger.info('should update footer-icon', result.body);
+    logger.info('should update footer-icon');
   });
 
   test('should delete footer-icon', async () => {
     const token = await tokenString();
     const Id = await getIconId();
-    const result = await request(url).delete(`/footerImages/${Id}`).set({ authorization: `Bearer ${token}` });
+    const result = await request(URL).delete(`/footerImages/${Id}`).set({ authorization: `Bearer ${token}` });
     if (result.statusCode !== 200) {
-      logger.error('should delete footer-icon', result.body);
+      logger.error('should delete footer-icon', result.error);
     }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject({ success: true });
-    logger.info('should delete footer-icon', result.body);
+    logger.info('should delete footer-icon');
   });
 });

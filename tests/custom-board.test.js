@@ -4,13 +4,11 @@ const {
 
 const request = require('supertest');
 
-const url = 'http://localhost:3001/api';
-
 const {
     getCustomDeviceType, getCustomDeviceId,
 } = require('./custom-board');
 
-const { tokenString, generateString, logger } = require('./common');
+const { tokenString, generateString, logger, URL } = require('./common');
 
 beforeEach(async () => {
     console.log('Before calling');
@@ -43,14 +41,14 @@ describe('Should Check Custom-Device Api', () => {
         const token = await tokenString();
         const data = await getObj();
 
-        const result = await request(url).post('/custom-device').set({ authorization: `Bearer ${token}` })
+        const result = await request(URL).post('/custom-device').set({ authorization: `Bearer ${token}` })
             .send(data);
         if (result.statusCode !== 200) {
-            logger.error('should add custom-device', result.body);
+            logger.error('should add custom-device', result.error);
         }
         expect(result.status).toBe(200);
         expect(result.body).toMatchObject(expected);
-        logger.info('should add custom-device', result.body);
+        logger.info('should add custom-device');
     });
 
     test('should update custom-device', async () => {
@@ -58,26 +56,26 @@ describe('Should Check Custom-Device Api', () => {
         const data = await getObj();
         const token = await tokenString();
 
-        const result = await request(url).put(`/custom-device/${Id}`).set({ authorization: `Bearer ${token}` })
+        const result = await request(URL).put(`/custom-device/${Id}`).set({ authorization: `Bearer ${token}` })
             .send(data.deviceId);
         if (result.statusCode !== 200) {
-            logger.error('should update custom-device', result.body);
+            logger.error('should update custom-device', result.error);
         }
         expect(result.status).toBe(200);
         expect(result.body).toMatchObject(expected);
-        logger.info('should update custom-device', result.body);
+        logger.info('should update custom-device');
     });
 
     test('should delete custom-device', async () => {
         const Id = await getCustomDeviceId();
         const token = await tokenString();
 
-        const result = await request(url).delete(`/custom-device/${Id}`).set({ authorization: `Bearer ${token}` });
+        const result = await request(URL).delete(`/custom-device/${Id}`).set({ authorization: `Bearer ${token}` });
         if (result.statusCode !== 200) {
-            logger.error('should delete custom-device', result.body);
+            logger.error('should delete custom-device', result.error);
         }
         expect(result.status).toBe(200);
         expect(result.body).toMatchObject({});
-        logger.info('should delete custom-device', result.body);
+        logger.info('should delete custom-device');
     });
 });

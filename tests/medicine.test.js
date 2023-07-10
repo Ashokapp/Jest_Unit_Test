@@ -4,13 +4,11 @@ const {
 
 const request = require('supertest');
 
-const url = 'http://localhost:3001/api';
-
 const {
   getMedicineId,
 } = require('./medicine');
 
-const { tokenString, generateString, logger } = require('./common');
+const { tokenString, generateString, logger, URL } = require('./common');
 
 beforeEach(async () => {
   console.log('Before calling');
@@ -36,38 +34,38 @@ const expected = expect.objectContaining({
 describe('Should Check Medicine Api', () => {
   test('should add Medicine', async () => {
     const token = await tokenString();
-    const result = await request(url).post('/medicines').set({ authorization: `Bearer ${token}` })
+    const result = await request(URL).post('/medicines').set({ authorization: `Bearer ${token}` })
       .send(data);
     if (result.statusCode !== 200) {
-      logger.error('should add Medicine', result.body);
+      logger.error('should add Medicine', result.error);
     }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
-    logger.info('should add Medicine', result.body);
+    logger.info('should add Medicine');
   });
 
   test('should update Medicine', async () => {
     const token = await tokenString();
     const Id = await getMedicineId();
-    const result = await request(url).put(`/medicines/${Id}`).set({ authorization: `Bearer ${token}` })
+    const result = await request(URL).put(`/medicines/${Id}`).set({ authorization: `Bearer ${token}` })
       .send(data.name);
     if (result.statusCode !== 200) {
-      logger.error('should update Medicine', result.body);
+      logger.error('should update Medicine', result.error);
     }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
-    logger.info('should update Medicine', result.body);
+    logger.info('should update Medicine');
   });
 
   test('should delete Medicine', async () => {
     const token = await tokenString();
     const Id = await getMedicineId();
-    const result = await request(url).delete(`/medicines/${Id}`).set({ authorization: `Bearer ${token}` });
+    const result = await request(URL).delete(`/medicines/${Id}`).set({ authorization: `Bearer ${token}` });
     if (result.statusCode !== 200) {
-      logger.error('should delete Medicine', result.body);
+      logger.error('should delete Medicine', result.error);
     }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
-    logger.info('should delete Medicine', result.body);
+    logger.info('should delete Medicine');
   });
 });

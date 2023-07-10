@@ -1,12 +1,12 @@
 const phin = require('phin');
 
-const { tokenString, logger } = require('./common');
+const { tokenString, logger, URL } = require('./common');
 
 async function getAlertId() {
   try {
     const token = await tokenString();
     const response = await phin({
-      url: 'http://localhost:3001/api/alerts-v2',
+      url: `${URL}/alerts-v2`,
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -28,7 +28,7 @@ async function getLedPattern() {
   try {
     const token = await tokenString();
     const response = await phin({
-      url: 'http://localhost:3001/api/led-pattern',
+      url: `${URL}/led-pattern`,
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,

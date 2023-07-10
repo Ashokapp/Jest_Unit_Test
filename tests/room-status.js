@@ -1,12 +1,12 @@
 const phin = require('phin');
 
-const { tokenString, logger } = require('./common');
+const { tokenString, logger, URL } = require('./common');
 
 async function roomStatusId() {
   try {
     const token = await tokenString();
     const response = await phin({
-      url: 'http://localhost:3001/api/predefinedstatus',
+      url: `${URL}/predefinedstatus`,
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token} `,
@@ -32,7 +32,7 @@ async function getLedPattern() {
     const token = await tokenString();
 
     const response = await phin({
-      url: 'http://localhost:3001/api/led-pattern',
+      url: `${URL}/led-pattern`,
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token} `,
@@ -53,7 +53,7 @@ async function getRoomType() {
     const token = await tokenString();
 
     const response = await phin({
-      url: 'http://localhost:3001/api/master?code=ROOM_TYPE',
+      url: `${URL}/master?code=ROOM_TYPE`,
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token} `,
@@ -73,7 +73,7 @@ async function getLayout() {
   try {
     const token = await tokenString();
     const response = await phin({
-      url: 'http://localhost:3001/api/layouts',
+      url: `${URL}/layouts`,
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token} `,

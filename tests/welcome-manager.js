@@ -1,12 +1,12 @@
 const phin = require('phin');
 
-const { tokenString, logger } = require('./common');
+const { tokenString, logger, URL } = require('./common');
 
 async function getWelcomeId() {
   try {
     const token = await tokenString();
     const response = await phin({
-      url: 'http://localhost:3001/api/welcome-message',
+      url: `${URL}/welcome-message`,
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,

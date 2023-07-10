@@ -4,13 +4,11 @@ const {
 
 const request = require('supertest');
 
-const url = 'http://localhost:3001/api';
-
 const {
   getDeviceType, getDevicesId,
 } = require('./device');
 
-const { tokenString, generateString, logger } = require('./common');
+const { tokenString, generateString, logger, URL } = require('./common');
 
 beforeEach(async () => {
   console.log('Before calling');
@@ -43,14 +41,14 @@ describe('Should Check Devices Api', () => {
     const token = await tokenString();
     const data = await getObj();
 
-    const result = await request(url).post('/devices').set({ authorization: `Bearer ${token}` })
+    const result = await request(URL).post('/devices').set({ authorization: `Bearer ${token}` })
       .send(data);
     if (result.statusCode !== 200) {
-      logger.error('should add device', result.body);
+      logger.error('should add device', result.error);
     }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
-    logger.info('should add device', result.body);
+    logger.info('should add device');
   });
 
   test('should update device data', async () => {
@@ -58,26 +56,26 @@ describe('Should Check Devices Api', () => {
     const data = await getObj();
     const token = await tokenString();
 
-    const result = await request(url).put(`/devices/${deviceId}`).set({ authorization: `Bearer ${token}` })
+    const result = await request(URL).put(`/devices/${deviceId}`).set({ authorization: `Bearer ${token}` })
       .send(data.deviceId);
     if (result.statusCode !== 200) {
-      logger.error('should update device data', result.body);
+      logger.error('should update device data', result.error);
     }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
-    logger.info('should update device data', result.body);
+    logger.info('should update device data');
   });
 
   test('should delete device data', async () => {
     const deviceId = await getDevicesId();
     const token = await tokenString();
 
-    const result = await request(url).delete(`/devices/${deviceId}`).set({ authorization: `Bearer ${token}` });
+    const result = await request(URL).delete(`/devices/${deviceId}`).set({ authorization: `Bearer ${token}` });
     if (result.statusCode !== 200) {
-      logger.error('should delete device data', result.body);
+      logger.error('should delete device data', result.error);
     }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject({ success: true });
-    logger.info('should delete device data', result.body);
+    logger.info('should delete device data');
   });
 });

@@ -4,13 +4,11 @@ const {
 
 const request = require('supertest');
 
-const url = 'http://localhost:3001/api';
-
 const {
   getThemeId,
 } = require('./theme');
 
-const { tokenString, generateString, logger } = require('./common');
+const { tokenString, generateString, logger, URL } = require('./common');
 
 beforeEach(async () => {
   console.log('Before calling');
@@ -69,38 +67,38 @@ const expected = expect.objectContaining({
 describe('Should Check Theme Api', () => {
   test('should add theme', async () => {
     const token = await tokenString();
-    const result = await request(url).post('/themes').set({ Authorization: `Bearer ${token}` }).send(data);
+    const result = await request(URL).post('/themes').set({ Authorization: `Bearer ${token}` }).send(data);
     if (result.statusCode !== 200) {
-      logger.error('should add theme', result.body);
+      logger.error('should add theme', result.error);
     }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
-    logger.info('should add theme', result.body);
+    logger.info('should add theme');
   });
 
   test('should update theme', async () => {
     const token = await tokenString();
     const themeId = await getThemeId();
-    const result = await request(url).put(`/themes/${themeId}`).set({ Authorization: `Bearer ${token}` }).send({
+    const result = await request(URL).put(`/themes/${themeId}`).set({ Authorization: `Bearer ${token}` }).send({
       deviceType: data.deviceType,
     });
     if (result.statusCode !== 200) {
-      logger.error('should update theme', result.body);
+      logger.error('should update theme', result.error);
     }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
-    logger.info('should update theme', result.body);
+    logger.info('should update theme');
   });
 
   test('should delete theme', async () => {
     const token = await tokenString();
     const themeId = await getThemeId();
-    const result = await request(url).delete(`/themes/${themeId}`).set({ Authorization: `Bearer ${token}` });
+    const result = await request(URL).delete(`/themes/${themeId}`).set({ Authorization: `Bearer ${token}` });
     if (result.statusCode !== 200) {
-      logger.error('should delete theme', result.body);
+      logger.error('should delete theme', result.error);
     }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject({ success: true });
-    logger.info('should delete theme', result.body);
+    logger.info('should delete theme');
   });
 });

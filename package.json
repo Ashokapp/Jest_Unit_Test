@@ -25,11 +25,10 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@faker-js/faker": "^8.0.2",
     "@jest/globals": "^29.5.0",
+    "dotenv": "^16.3.1",
     "jest": "^26.6.3",
     "jest-html-reporters": "^3.1.4",
-    "mongodb": "^3.6.12",
     "phin": "^3.7.0",
     "random-email": "^1.0.3",
     "supertest": "^6.3.3",

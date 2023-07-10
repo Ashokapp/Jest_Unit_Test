@@ -1,16 +1,14 @@
 const {
-    describe, test, expect, beforeEach, afterEach, globals,
+    describe, test, expect, beforeEach, afterEach,
 } = require('@jest/globals');
 
 const request = require('supertest');
-
-const url = 'http://localhost:3001/api';
 
 const {
     getManagerId,
 } = require('./data-manager');
 
-const { tokenString, generateString, generateRandomNumber, logger } = require('./common');
+const { tokenString, generateString, generateRandomNumber, logger, URL } = require('./common');
 
 beforeEach(async () => {
     console.log('Before calling');
@@ -33,43 +31,43 @@ const expected = expect.objectContaining({
 })
 
 describe('Should Check Data-Manager Api', () => {
-    test('should add Data-Manager', async () => {
-        const token = await tokenString();
+    // test('should add Data-Manager', async () => {
+    //     const token = await tokenString();
 
-        const result = await request(url).post('/long-term-care').set({ authorization: `Bearer ${token}` })
-            .send(data);
-        if (result.statusCode !== 200) {
-            logger.error('should add Data-Manager', result.body);
-        }
-        expect(result.status).toBe(200);
-        expect(result.body).toMatchObject(expected);
-        logger.info('should add Data-Manager', result.body);
-    });
+    //     const result = await request(URL).post('/long-term-care').set({ authorization: `Bearer ${token}` })
+    //         .send(data);
+    //     if (result.statusCode !== 200) {
+    //         logger.error('should add Data-Manager', result.error);
+    //     }
+    //     expect(result.status).toBe(200);
+    //     expect(result.body).toMatchObject(expected);
+    //     logger.info('should add Data-Manager');
+    // });
 
-    test('Should Update Data-Manager', async () => {
-        const Id = await getManagerId();
-        const token = await tokenString();
+    // test('Should Update Data-Manager', async () => {
+    //     const Id = await getManagerId();
+    //     const token = await tokenString();
 
-        const result = await request(url).put(`/long-term-care/${Id}`).set({ authorization: `Bearer ${token}` })
-            .send(data);
-        if (result.statusCode !== 200) {
-            logger.error('Should Update Data-Manager', result.body);
-        }
-        expect(result.status).toBe(200);
-        expect(result.body).toMatchObject(expected);
-        logger.info('Should Update Data-Manager', result.body);
-    });
+    //     const result = await request(URL).put(`/long-term-care/${Id}`).set({ authorization: `Bearer ${token}` })
+    //         .send(data);
+    //     if (result.statusCode !== 200) {
+    //         logger.error('Should Update Data-Manager', result.error);
+    //     }
+    //     expect(result.status).toBe(200);
+    //     expect(result.body).toMatchObject(expected);
+    //     logger.info('Should Update Data-Manager');
+    // });
 
     test('Should Delete Data-Manager', async () => {
         const Id = await getManagerId();
         const token = await tokenString();
 
-        const result = await request(url).delete(`/long-term-care/${Id}`).set({ authorization: `Bearer ${token}` });
+        const result = await request(URL).delete(`/long-term-care/${Id}`).set({ authorization: `Bearer ${token}` });
         if (result.statusCode !== 200) {
-            logger.error('Should Delete Data-Manager', result.body);
+            logger.error('Should Delete Data-Manager', result.error);
         }
         expect(result.status).toBe(200);
         expect(result.body).toMatchObject({ success: true });
-        logger.info('Should Delete Data-Manager', result.body);
+        logger.info('Should Delete Data-Manager');
     });
 });

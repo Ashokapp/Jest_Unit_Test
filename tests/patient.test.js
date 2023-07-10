@@ -4,13 +4,11 @@ const {
 
 const request = require('supertest');
 
-const url = 'http://localhost:3001/api';
-
 const {
   getBedId, getGenderCode, getPatientId,
 } = require('./patient');
 
-const { tokenString, generateString, generateRandomNumber, generateHexCode, logger } = require('./common');
+const { tokenString, generateString, generateRandomNumber, generateHexCode, logger, URL } = require('./common');
 
 beforeEach(async () => {
   console.log('Before calling');
@@ -60,38 +58,38 @@ describe('Should Check Patients Api', () => {
   test('should admit patient', async () => {
     const token = await tokenString();
     const data = await getObj();
-    const result = await request(url).post('/patients').set({ authorization: `Bearer ${token}` }).send(data);
+    const result = await request(URL).post('/patients').set({ authorization: `Bearer ${token}` }).send(data);
     if (result.statusCode !== 200) {
-      logger.error('should admit patient', result.body);
+      logger.error('should admit patient', result.error);
     }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
-    logger.info('should admit patient', result.body);
+    logger.info('should admit patient');
   });
 
   test('should update patient detail', async () => {
     const token = await tokenString();
     const Id = await getPatientId();
     const data = await getObj();
-    const result = await request(url).put(`/patients/${Id}`).set({ authorization: `Bearer ${token}` })
+    const result = await request(URL).put(`/patients/${Id}`).set({ authorization: `Bearer ${token}` })
       .send(data);
     if (result.statusCode !== 200) {
-      logger.error('should update patient', result.body);
+      logger.error('should update patient', result.error);
     }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject(expected);
-    logger.info('should update patient', result.body);
+    logger.info('should update patient');
   });
 
   test('should discharge patient', async () => {
     const token = await tokenString();
     const Id = await getPatientId();
-    const result = await request(url).delete(`/patients/${Id}`).set({ authorization: `Bearer ${token}` });
+    const result = await request(URL).delete(`/patients/${Id}`).set({ authorization: `Bearer ${token}` });
     if (result.statusCode !== 200) {
-      logger.error('should discharge patient', result.body);
+      logger.error('should discharge patient', result.error);
     }
     expect(result.status).toBe(200);
     expect(result.body).toMatchObject({ success: true });
-    logger.info('should discharge patient', result.body);
+    logger.info('should discharge patient');
   });
 });

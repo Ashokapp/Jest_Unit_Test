@@ -1,13 +1,13 @@
 const phin = require('phin');
 
-const { tokenString, logger } = require('./common');
+const { tokenString, logger, URL } = require('./common');
 
 async function getTypeOfPPE() {
     try {
         const token = await tokenString();
         const response = await phin({
             method: 'GET',
-            url: 'http://localhost:3001/api/master?code=PPE_ORDER_TYPES',
+            url: `${URL}/master?code=PPE_ORDER_TYPES`,
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -27,7 +27,7 @@ async function getPPEId() {
         const token = await tokenString();
         const response = await phin({
             method: 'GET',
-            url: 'http://localhost:3001/api/ppe-categories',
+            url: `${URL}/ppe-categories`,
             headers: {
                 Authorization: `Bearer ${token}`,
             },

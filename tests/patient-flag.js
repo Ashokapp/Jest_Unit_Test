@@ -1,23 +1,19 @@
 const phin = require('phin');
 
-const { tokenString, logger } = require('./common');
+const { tokenString, logger, URL } = require('./common');
 
 function flagType_visibility() {
-  try {
-    const data = ['Allergy', 'Order', 'Dietary', 'General'];
-    const index = Math.floor(Math.random() * data.length);
-    const flagType = data[index];
-    let boardVisibility = null;
+  const data = ['Allergy', 'Order', 'Dietary', 'General'];
+  const index = Math.floor(Math.random() * data.length);
+  const flagType = data[index];
+  let boardVisibility = null;
 
-    if (flagType === 'Allergy' || flagType === 'Order') {
-      const boardData = ["PATIENTBOARD", "DOORBOARD", "NURSEBOARD"];
-      const boardIndex = Math.floor(Math.random() * boardData.length);
-      boardVisibility = `["${boardData[boardIndex]}"]`;
-    }
-    return { flagType, boardVisibility };
-  } catch (error) {
-    logger.error(error);
+  if (flagType === 'Allergy' || flagType === 'Order') {
+    const boardData = ["PATIENTBOARD", "DOORBOARD", "NURSEBOARD"];
+    const boardIndex = Math.floor(Math.random() * boardData.length);
+    boardVisibility = `["${boardData[boardIndex]}"]`;
   }
+  return { flagType, boardVisibility };
 }
 
 async function getLedPattern() {
@@ -25,7 +21,7 @@ async function getLedPattern() {
     const token = await tokenString();
 
     const response = await phin({
-      url: 'http://localhost:3001/api/led-pattern',
+      url: `${URL}/led-pattern`,
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token} `,
@@ -45,7 +41,7 @@ async function getFlagId() {
   try {
     const token = await tokenString();
     const response = await phin({
-      url: 'http://localhost:3001/api/patientFlags',
+      url: `${URL}/patientFlags`,
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token} `,

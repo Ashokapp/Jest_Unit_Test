@@ -1,13 +1,13 @@
 const phin = require('phin');
 
-const { tokenString, logger } = require('./common');
+const { tokenString, logger, URL } = require('./common');
 
 async function getCustomDeviceType() {
     try {
         const token = await tokenString();
         const response = await phin({
             method: 'GET',
-            url: 'http://localhost:3001/api/master?code=CUSTOM_DEVICE_TYPE',
+            url: `${URL}/master?code=CUSTOM_DEVICE_TYPE`,
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -27,7 +27,7 @@ async function getCustomDeviceId() {
         const token = await tokenString();
         const response = await phin({
             method: 'GET',
-            url: 'http://localhost:3001/api/custom-device',
+            url: `${URL}/custom-device`,
             headers: {
                 Authorization: `Bearer ${token}`,
             },

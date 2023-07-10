@@ -1,6 +1,6 @@
 const phin = require('phin');
 
-const { tokenString, logger } = require('./common');
+const { tokenString, logger, URL } = require('./common');
 
 function getDeviceType() {
   const data = ['PATIENTBOARD', 'DOORBOARD', 'NURSEBOARD', 'CUSTOMBOARD'];
@@ -12,7 +12,7 @@ async function getLayoutId() {
   try {
     const token = await tokenString();
     const response = await phin({
-      url: 'http://localhost:3001/api/layouts',
+      url: `${URL}/layouts`,
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
